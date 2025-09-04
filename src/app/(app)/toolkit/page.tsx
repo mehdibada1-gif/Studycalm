@@ -1,3 +1,4 @@
+
 import { Music, Timer, Wind } from 'lucide-react';
 import {
   Card,
@@ -9,13 +10,16 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BreathingExercise from '@/components/toolkit/breathing-exercise';
 import PomodoroTimer from '@/components/toolkit/pomodoro-timer';
+import AppHeader from '@/components/layout/app-header';
 
 export default function ToolkitPage() {
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold font-headline">Stress & Focus Toolkit</h1>
-        <p className="text-muted-foreground">
+    <>
+    <AppHeader title="Toolkit" />
+    <div className="p-4 sm:p-6 lg:p-8 space-y-8">
+      <div className="space-y-1">
+        <h1 className="text-2xl font-bold font-headline">Stress & Focus Toolkit</h1>
+        <p className="text-muted-foreground text-sm">
           A collection of tools to help you manage anxiety and enhance concentration.
         </p>
       </div>
@@ -67,7 +71,7 @@ export default function ToolkitPage() {
               <CardDescription>
                 Curated playlists to help you concentrate.
               </CardDescription>
-            </CardHeader>
+            </CardHeader>.
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">
                 Focus music can help block out distractions and improve concentration. Here are some recommended lo-fi and ambient playlists:
@@ -82,5 +86,6 @@ export default function ToolkitPage() {
         </TabsContent>
       </Tabs>
     </div>
+    </>
   );
 }

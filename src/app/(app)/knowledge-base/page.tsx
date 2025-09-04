@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { answerQuestion } from '@/ai/flows/knowledge-base-flow';
+import AppHeader from '@/components/layout/app-header';
 
 const formSchema = z.object({
   question: z.string().min(5, 'Please ask a more detailed question.'),
@@ -55,85 +56,88 @@ export default function KnowledgeBasePage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="flex items-center gap-4 mb-8">
-        <BookOpen className="size-10 text-primary" />
-        <div>
-          <h1 className="text-3xl font-bold font-headline">Knowledge Base</h1>
-          <p className="text-muted-foreground">
-            Ask questions about mental health, study techniques, and well-being.
-          </p>
+    <>
+      <AppHeader title="Knowledge Base" />
+      <div className="p-4 sm:p-6 lg:p-8 space-y-8">
+        <div className="flex items-center gap-4">
+          <BookOpen className="size-10 text-primary" />
+          <div>
+            <h1 className="text-2xl font-bold font-headline">Knowledge Base</h1>
+            <p className="text-muted-foreground text-sm">
+              Ask questions about mental health, study techniques, and well-being.
+            </p>
+          </div>
         </div>
-      </div>
 
-      <Card>
-        <CardHeader>
-            <CardTitle>Ask a Question</CardTitle>
-            <CardDescription>Our AI will provide an answer based on trusted knowledge sources.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="question"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Your Question</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g., How can I improve my focus?" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" disabled={isPending}>
-                {isPending ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Searching...
-                  </>
-                ) : (
-                  <>
-                    <Search className="mr-2 h-4 w-4" />
-                    Get Answer
-                  </>
-                )}
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
-      </Card>
-
-      {isPending && (
-          <Card className="mt-8">
-            <CardHeader>
-                <CardTitle>Finding an answer...</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                <div className="h-4 bg-muted rounded animate-pulse w-3/4"></div>
-                <div className="h-4 bg-muted rounded animate-pulse w-full"></div>
-                <div className="h-4 bg-muted rounded animate-pulse w-1/2"></div>
-            </CardContent>
-          </Card>
-      )}
-
-      {answer && (
-        <Card className="mt-8">
+        <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-                <Sparkles className="text-primary"/>
-                Answer
-            </CardTitle>
+              <CardTitle>Ask a Question</CardTitle>
+              <CardDescription>Our AI will provide an answer based on trusted knowledge sources.</CardDescription>
           </CardHeader>
-          <CardContent className="prose prose-sm max-w-none text-foreground">
-             <div dangerouslySetInnerHTML={{ __html: answer.replace(/\n/g, '<br />') }} />
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="question"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Your Question</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., How can I improve my focus?" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Searching...
+                    </>
+                  ) : (
+                    <>
+                      <Search className="mr-2 h-4 w-4" />
+                      Get Answer
+                    </>
+                  )}
+                </Button>
+              </form>
+            </Form>
           </CardContent>
         </Card>
-      )}
-       {error && (
-        <div className="mt-8 text-destructive text-center">{error}</div>
-      )}
-    </div>
+
+        {isPending && (
+            <Card className="mt-8">
+              <CardHeader>
+                  <CardTitle>Finding an answer...</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                  <div className="h-4 bg-muted rounded animate-pulse w-3/4"></div>
+                  <div className="h-4 bg-muted rounded animate-pulse w-full"></div>
+                  <div className="h-4 bg-muted rounded animate-pulse w-1/2"></div>
+              </CardContent>
+            </Card>
+        )}
+
+        {answer && (
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="text-primary"/>
+                  Answer
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="prose prose-sm max-w-none text-foreground prose-p:my-2 prose-headings:my-3">
+              <div dangerouslySetInnerHTML={{ __html: answer.replace(/\n/g, '<br />') }} />
+            </CardContent>
+          </Card>
+        )}
+        {error && (
+          <div className="mt-8 text-destructive text-center">{error}</div>
+        )}
+      </div>
+    </>
   );
 }

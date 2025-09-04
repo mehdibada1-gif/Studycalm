@@ -1,3 +1,4 @@
+
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
@@ -27,10 +28,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`font-body antialiased ${inter.variable} ${fontHeading.variable}`}
+        className={`font-body antialiased ${inter.variable} ${fontHeading.variable} bg-muted/40`}
+        suppressHydrationWarning={true}
       >
         <AuthProvider>
-          {children}
+          <div className="flex justify-center items-center min-h-screen">
+            <div className="w-full max-w-sm h-screen overflow-y-auto bg-background shadow-2xl">
+              {children}
+            </div>
+          </div>
           <Toaster />
         </AuthProvider>
       </body>

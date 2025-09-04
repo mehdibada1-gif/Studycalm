@@ -47,6 +47,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog';
+import AppHeader from '@/components/layout/app-header';
 
 const journalSchema = z.object({
   entry: z.string().min(10, {
@@ -120,53 +121,52 @@ export default function JournalPage() {
   }
 
   return (
-    <div className="grid gap-8 md:grid-cols-2">
-      <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold font-headline">Mood Journal</h1>
-          <p className="text-muted-foreground">
-            Reflect on your day and track your emotional well-being.
-          </p>
-        </div>
-        <Card>
+    <>
+      <AppHeader title="Journal" />
+      <div className="p-4 sm:p-6 lg:p-8 space-y-8">
+        <Card className="overflow-hidden">
           <CardHeader>
             <CardTitle>New Entry</CardTitle>
             <CardDescription>How are you feeling today?</CardDescription>
           </CardHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
                 <FormField
                   control={form.control}
                   name="mood"
                   render={({ field }) => (
-                    <FormItem className="space-y-3">
+                    <FormItem>
                       <FormLabel>Select your mood</FormLabel>
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
                           defaultValue={field.value}
-                          className="flex gap-4"
+                          className="flex justify-around pt-2"
                         >
                           {['😄', '🙂', '😐', '😕', '😔'].map((mood) => (
                             <FormItem
                               key={mood}
-                              className="flex items-center space-x-2 space-y-0"
+                              className="flex items-center"
                             >
                               <FormControl>
                                 <RadioGroupItem
                                   value={mood}
+                                  id={`mood-${mood}`}
                                   className="sr-only"
                                 />
                               </FormControl>
-                              <FormLabel className="text-3xl cursor-pointer p-2 rounded-full transition-all data-[state=checked]:bg-accent data-[state=checked]:scale-125">
+                              <FormLabel 
+                                htmlFor={`mood-${mood}`}
+                                className="text-4xl cursor-pointer p-2 rounded-full transition-all transform hover:scale-110 data-[state=checked]:scale-125 data-[state=checked]:bg-accent"
+                              >
                                 {mood}
                               </FormLabel>
                             </FormItem>
                           ))}
                         </RadioGroup>
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage className="text-center pt-2" />
                     </FormItem>
                   )}
                 />
@@ -189,8 +189,8 @@ export default function JournalPage() {
                   )}
                 />
               </CardContent>
-              <CardFooter>
-                <Button type="submit">
+              <CardFooter className="bg-muted/50 px-6 py-4">
+                <Button type="submit" className="w-full">
                   <BookText className="mr-2 size-4" />
                   Save Entry
                 </Button>
@@ -198,41 +198,44 @@ export default function JournalPage() {
             </form>
           </Form>
         </Card>
-      </div>
 
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold font-headline">Past Entries</h2>
-        {entries.length === 0 ? (
-          <p className="text-muted-foreground pt-8 text-center">
-            No entries yet. Add one to get started!
-          </p>
-        ) : (
-          <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
-            {entries.map((entry) => (
-              <Card key={entry.id}>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-4">
-                    <span className="text-3xl">{entry.mood}</span>
-                    <span>{format(entry.date.toDate(), 'MMMM d, yyyy')}</span>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">{entry.entry}</p>
-                </CardContent>
-                <CardFooter>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleGetTips(entry.entry)}
-                  >
-                    <Sparkles className="mr-2 size-4" />
-                    Get Intelligent Tips
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
-        )}
+        <div className="space-y-4">
+          <h2 className="text-2xl font-bold font-headline px-1">Past Entries</h2>
+          {entries.length === 0 ? (
+            <div className="text-center text-muted-foreground py-16">
+              <BookText className="mx-auto size-12 mb-4" />
+              <h3 className="font-semibold text-lg">No entries yet</h3>
+              <p className="text-sm">Your journal entries will appear here.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {entries.map((entry) => (
+                <Card key={entry.id}>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <span className="text-3xl">{entry.mood}</span>
+                            <span className="font-semibold">{format(entry.date.toDate(), 'MMMM d, yyyy')}</span>
+                        </div>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleGetTips(entry.entry)}
+                            className="text-muted-foreground"
+                        >
+                            <Sparkles className="size-5" />
+                            <span className="sr-only">Get Intelligent Tips</span>
+                        </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground whitespace-pre-wrap">{entry.entry}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -246,7 +249,7 @@ export default function JournalPage() {
               Here are some AI-generated suggestions based on your entry.
             </DialogDescription>
           </DialogHeader>
-          <div className="py-4">
+          <div className="py-4 max-h-[60vh] overflow-y-auto">
             {isTipsLoading ? (
               <div className="flex items-center justify-center space-x-2">
                 <Loader2 className="animate-spin" />
@@ -258,6 +261,6 @@ export default function JournalPage() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useTransition } from 'react';
@@ -25,8 +26,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import AppHeader from '@/components/layout/app-header';
 
 const formSchema = z.object({
   studyGoals: z.string().min(10, 'Please describe your study goals in a bit more detail.'),
@@ -66,28 +67,33 @@ export default function StudyPlanPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center gap-4 mb-8">
+    <>
+    <AppHeader title="Study Plan" />
+    <div className="p-4 sm:p-6 lg:p-8 space-y-8">
+      <div className="flex items-center gap-4">
         <BrainCircuit className="size-10 text-primary" />
         <div>
-          <h1 className="text-3xl font-bold font-headline">Personalized Study Plan</h1>
-          <p className="text-muted-foreground">Let our AI create a study schedule tailored just for you.</p>
+          <h1 className="text-2xl font-bold font-headline">Personalized Study Plan</h1>
+          <p className="text-muted-foreground text-sm">Let our AI create a study schedule tailored just for you.</p>
         </div>
       </div>
 
       <Card>
-        <CardContent className="p-6">
+        <CardHeader>
+            <CardTitle>Your Details</CardTitle>
+            <CardDescription>Fill this out to get a plan.</CardDescription>
+        </CardHeader>
+        <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <div className="grid md:grid-cols-2 gap-8">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
                   control={form.control}
                   name="studyGoals"
                   render={({ field }) => (
-                    <FormItem className="md:col-span-2">
+                    <FormItem>
                       <FormLabel>What are your main study goals?</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., Ace my biology final, improve my GPA" {...field} />
+                        <Input placeholder="e.g., Ace my biology final" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -127,7 +133,7 @@ export default function StudyPlanPage() {
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select your stress level" />
-                          </SelectTrigger>
+                          </Trigger>
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="low">Low</SelectItem>
@@ -167,7 +173,6 @@ export default function StudyPlanPage() {
                     </FormItem>
                   )}
                 />
-              </div>
 
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
@@ -215,5 +220,6 @@ export default function StudyPlanPage() {
         <div className="mt-8 text-destructive text-center">{error}</div>
       )}
     </div>
+    </>
   );
 }

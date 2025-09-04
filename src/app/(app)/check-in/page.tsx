@@ -1,5 +1,6 @@
+
 'use client';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,6 +9,7 @@ import {
   HeartPulse,
   Lightbulb,
   MessageCircleQuestion,
+  Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,6 +29,8 @@ import {
 } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { generateIntelligentTips } from '@/ai/flows/intelligent-tips-from-journal';
+import AppHeader from '@/components/layout/app-header';
 
 const questions = [
   {
@@ -54,39 +58,41 @@ const schemaFields = questions.reduce((acc, q) => {
 const checkinSchema = z.object(schemaFields);
 
 export default function CheckinPage() {
-  const [result, setResult] = useState<{ score: number; message: string; title: string } | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const [result, setResult] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof checkinSchema>>({
     resolver: zodResolver(checkinSchema),
   });
 
   function onSubmit(data: z.infer<typeof checkinSchema>) {
-    let score = 0;
-    Object.values(data).forEach(value => {
-        const index = questions[0].options.indexOf(value);
-        score += (4 - index); // 'Very High' (index 0) is 4 points, 'Very Low' (index 4) is 0 points
-    });
+    startTransition(async () => {
+        setResult(null);
+        const journalEntry = `This week, my energy was ${data.energy}, my study motivation was ${data.motivation}, and my sleep quality was ${data.sleep}.`;
 
-    if (score >= 9) {
-      setResult({ score, title: 'Feeling Great!', message: 'You seem to be managing your stress well. Keep up the great work with your healthy habits!' });
-    } else if (score >= 5) {
-      setResult({ score, title: 'Doing Okay', message: 'There might be some signs of stress. Consider using the toolkit for a breathing exercise or a scheduled break.' });
-    } else {
-      setResult({ score, title: 'Time to Recharge', message: 'It looks like you might be feeling overwhelmed. It’s important to prioritize rest. Explore our resources for more support.' });
-    }
+        try {
+            const aiResult = await generateIntelligentTips({ journalEntries: journalEntry });
+            setResult(aiResult.tips);
+        } catch (error) {
+            console.error(error);
+            setResult('Sorry, I could not generate advice right now. Please try again later.');
+        }
+    })
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="flex items-center gap-4 mb-8">
+    <>
+    <AppHeader title="Weekly Check-in" />
+    <div className="p-4 sm:p-6 lg:p-8 space-y-8">
+      <div className="flex items-center gap-4">
         <ClipboardCheck className="size-10 text-primary" />
         <div>
-          <h1 className="text-3xl font-bold font-headline">Weekly Burnout Check-in</h1>
-          <p className="text-muted-foreground">A quick self-assessment to check on your well-being.</p>
+          <h1 className="text-2xl font-bold font-headline">Burnout Check-in</h1>
+          <p className="text-muted-foreground text-sm">A quick self-assessment to check on your well-being.</p>
         </div>
       </div>
 
-      {!result ? (
+      {!result && !isPending ? (
         <Card>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -131,9 +137,18 @@ export default function CheckinPage() {
                 ))}
               </CardContent>
               <CardContent>
-                <Button type="submit">
-                  <HeartPulse className="mr-2" />
-                  See My Results
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Analyzing...
+                    </>
+                  ) : (
+                    <>
+                      <HeartPulse className="mr-2" />
+                      See My Results
+                    </>
+                  )}
                 </Button>
               </CardContent>
             </form>
@@ -143,13 +158,23 @@ export default function CheckinPage() {
         <Card>
           <CardHeader>
             <CardTitle>Your Check-in Results</CardTitle>
+             <CardDescription>Here's some AI-powered feedback based on your answers.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Alert>
-              <Lightbulb className="h-4 w-4" />
-              <AlertTitle>{result.title}</AlertTitle>
-              <AlertDescription>{result.message}</AlertDescription>
-            </Alert>
+             {isPending ? (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                    <Loader2 className="animate-spin size-4" />
+                    <p>Generating your advice...</p>
+                </div>
+             ) : (
+                <Alert>
+                  <Lightbulb className="h-4 w-4" />
+                  <AlertTitle>Personalized Feedback</AlertTitle>
+                  <AlertDescription>
+                    <div dangerouslySetInnerHTML={{ __html: result?.replace(/\n/g, '<br />') ?? '' }} />
+                  </AlertDescription>
+                </Alert>
+             )}
             <Button onClick={() => {
                 setResult(null);
                 form.reset();
@@ -160,5 +185,6 @@ export default function CheckinPage() {
         </Card>
       )}
     </div>
+    </>
   );
 }

@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -22,7 +23,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { generateIntelligentTips } from '@/ai/flows/intelligent-tips-from-journal';
-import AppLogo from '@/components/app-logo';
+import AppHeader from '@/components/layout/app-header';
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -68,65 +69,68 @@ export default function DashboardPage() {
   }, [user]);
 
   return (
-    <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-      <div className="xl:col-span-3 space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight font-headline">
-          Welcome Back!
-        </h1>
-        <p className="text-muted-foreground">
-          Here's a snapshot of your journey to mindful learning.
-        </p>
-      </div>
+    <>
+      <AppHeader title="Dashboard" />
+      <div className="p-4 sm:p-6 lg:p-8 space-y-6">
+        <div className="space-y-1">
+          <h1 className="text-2xl font-bold tracking-tight font-headline">
+            Welcome Back!
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Here's a snapshot of your journey to mindful learning.
+          </p>
+        </div>
 
-      <Card className="xl:col-span-2">
-        <CardHeader>
-          <CardTitle>Mood Over Time</CardTitle>
-          <CardDescription>
-            Your mood entries from the last 7 days.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <MoodChart />
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Focus Analysis</CardTitle>
-          <CardDescription>
-            Your balance of study and break time.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <FocusChart />
-        </CardContent>
-      </Card>
-
-      <Card className="xl:col-span-3 bg-primary/10 border-primary/20">
-        <CardHeader className="flex flex-row items-center gap-4">
-          <div className="p-3 rounded-full bg-primary/20 text-primary">
-            <Lightbulb className="size-6" />
-          </div>
-          <div>
-            <CardTitle>
-              Actionable Advice
-            </CardTitle>
-            <CardDescription className="text-muted-foreground">
-              A tip based on your latest journal entry.
+        <Card>
+          <CardHeader>
+            <CardTitle>Mood Over Time</CardTitle>
+            <CardDescription>
+              Your mood entries from the last 7 days.
             </CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {isLoadingAdvice ? (
-            <div className="flex items-center gap-2">
-              <Loader2 className="animate-spin size-4" />
-              <p>Generating your advice...</p>
+          </CardHeader>
+          <CardContent>
+            <MoodChart />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Focus Analysis</CardTitle>
+            <CardDescription>
+              Your balance of study and break time.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <FocusChart />
+          </CardContent>
+        </Card>
+
+        <Card className="bg-primary/10 border-primary/20">
+          <CardHeader className="flex flex-row items-center gap-4">
+            <div className="p-3 rounded-full bg-primary/20 text-primary">
+              <Lightbulb className="size-6" />
             </div>
-          ) : (
-            <p>{advice}</p>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+            <div>
+              <CardTitle>
+                Actionable Advice
+              </CardTitle>
+              <CardDescription className="text-muted-foreground">
+                A tip based on your latest journal entry.
+              </CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {isLoadingAdvice ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="animate-spin size-4" />
+                <p>Generating your advice...</p>
+              </div>
+            ) : (
+              <p className="text-sm">{advice}</p>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </>
   );
 }

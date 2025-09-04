@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -15,12 +16,25 @@ export default function PomodoroTimer() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (isActive) {
+    // This now runs only on the client, avoiding hydration mismatch.
+    setTimeLeft(mode === 'study' ? STUDY_TIME : BREAK_TIME);
+  }, [mode]);
+
+  useEffect(() => {
+    if (isActive && timeLeft > 0) {
       intervalRef.current = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
-    } else if (intervalRef.current) {
+    } else if (!isActive && intervalRef.current) {
       clearInterval(intervalRef.current);
+    } else if (timeLeft <= 0) {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+        if (mode === 'study') {
+            setMode('break');
+        } else {
+            setMode('study');
+        }
+        setIsActive(false); // Pause timer when session ends
     }
 
     return () => {
@@ -28,21 +42,7 @@ export default function PomodoroTimer() {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isActive]);
-
-  useEffect(() => {
-    if (timeLeft <= 0) {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (mode === 'study') {
-        setMode('break');
-        setTimeLeft(BREAK_TIME);
-      } else {
-        setMode('study');
-        setTimeLeft(STUDY_TIME);
-      }
-      setIsActive(false); // Pause timer when session ends
-    }
-  }, [timeLeft, mode]);
+  }, [isActive, timeLeft]);
 
   const toggleTimer = () => {
     setIsActive(!isActive);
@@ -91,3 +91,4 @@ export default function PomodoroTimer() {
     </div>
   );
 }
+

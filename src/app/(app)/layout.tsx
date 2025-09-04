@@ -1,11 +1,10 @@
+
 'use client';
 import type { ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
-import AppSidebar from '@/components/layout/app-sidebar';
-import AppHeader from '@/components/layout/app-header';
 import { Loader2 } from 'lucide-react';
+import BottomNav from '@/components/layout/bottom-nav';
 
 export default function AppLayout({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
@@ -25,16 +24,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <div className="flex flex-col w-full">
-        <AppHeader />
-        <SidebarInset>
-            <main className="flex-1 p-4 sm:p-6 lg:p-8">
-                {children}
-            </main>
-        </SidebarInset>
-      </div>
-    </SidebarProvider>
+    <div className="flex flex-col h-full w-full bg-muted/30">
+      <main className="flex-1 overflow-y-auto pb-20">{children}</main>
+      <BottomNav />
+    </div>
   );
 }

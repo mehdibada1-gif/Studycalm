@@ -1,7 +1,5 @@
 
-'use client'
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import AppLogo from '@/components/app-logo';
+'use client';
 import { useAuth } from '@/context/auth-context';
 import { Button } from '../ui/button';
 import { LogOut } from 'lucide-react';
@@ -12,25 +10,28 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import AppLogo from '../app-logo';
 
-
-export default function AppHeader() {
+export default function AppHeader({ title }: { title: string }) {
   const { user, signOut } = useAuth();
   const userFallback = user?.email ? user.email.charAt(0).toUpperCase() : 'U';
+
   return (
-    <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
-      <div className="flex items-center gap-2 md:hidden">
-        <SidebarTrigger />
-        <AppLogo className="size-7 text-primary" />
-        <span className="font-bold text-lg">StudyCalm</span>
+    <header className="sticky top-0 z-10 flex h-16 items-center justify-between gap-4 border-b bg-background px-4">
+      <div className="flex items-center gap-2">
+        <AppLogo className="size-8 text-primary" />
+        <h1 className="text-xl font-bold font-headline">{title}</h1>
       </div>
-      <div className="flex-1 flex justify-end">
-       {user && (
+      <div className="flex items-center">
+        {user && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <Button
+                variant="ghost"
+                className="relative h-9 w-9 rounded-full"
+              >
                 <Avatar className="h-9 w-9">
                   <AvatarImage src={user.photoURL ?? ''} alt="User avatar" />
                   <AvatarFallback>{userFallback}</AvatarFallback>
