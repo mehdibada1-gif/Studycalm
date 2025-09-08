@@ -2,7 +2,7 @@
 'use client';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
@@ -13,7 +13,11 @@ export default function Home() {
   const router = useRouter();
 
   if(loading) {
-    return <div className="h-screen w-full flex items-center justify-center">Loading...</div>
+    return (
+        <div className="flex items-center justify-center h-screen">
+            <Loader2 className="animate-spin text-primary size-12" />
+        </div>
+    );
   }
 
   if (user) {
