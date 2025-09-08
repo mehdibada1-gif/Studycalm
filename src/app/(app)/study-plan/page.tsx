@@ -137,7 +137,7 @@ export default function StudyPlanPage() {
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select your stress level" />
-                          </Trigger>
+                          </SelectTrigger>
                         </FormControl>
                         <SelectContent>
                           <SelectItem value="low">Low</SelectItem>
