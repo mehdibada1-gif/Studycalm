@@ -1,5 +1,5 @@
 
-import { BookHeart, Clapperboard, LifeBuoy, Globe } from 'lucide-react';
+import { BookHeart, LifeBuoy, Globe } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -15,30 +15,29 @@ import {
 } from '@/components/ui/tabs';
 import AppHeader from '@/components/layout/app-header';
 
-
 const europeResources = {
-    organizations: [
-      { title: 'Mental Health Europe', description: 'An umbrella organization representing mental health associations across Europe. Advocates for positive mental health and well-being.', url: '#' },
-      { title: 'Stichting MIND', description: 'A prominent mental health charity in the Netherlands, offering support, information, and advocacy.', url: '#' },
-      { title: 'Mind (Sweden)', description: 'A Swedish non-profit focused on mental health support and suicide prevention.', url: '#' },
-      { title: 'Telefono Amico Italia', description: 'An Italian helpline offering emotional support to anyone in crisis or distress.', url: '#' },
-    ],
-    articles: [
-      { title: 'Understanding the Healthcare System in the Netherlands', url: '#', source: 'Expat.com' },
-      { title: 'Student Mental Health in Sweden: Where to Get Help', url: '#', source: 'Study in Sweden' },
-    ],
+  organizations: [
+    { title: 'Mental Health Europe', description: 'Advocates for positive mental health and well-being across Europe.', url: 'https://www.mhe-sme.org/' },
+    { title: 'Stichting MIND', description: 'A prominent mental health charity in the Netherlands, offering support and information.', url: 'https://mindblue.nl/' },
+    { title: 'Mind (UK)', description: 'A UK non-profit focused on mental health support and suicide prevention.', url: 'https://www.mind.org.uk/' },
+    { title: 'Befrienders Worldwide', description: 'A global network of emotional support centers, with members in most European countries.', url: 'https://www.befrienders.org/' },
+  ],
+  articles: [
+    { title: 'Student Mental Health: Where to Get Help', url: 'https://www.savethestudent.org/mental-health/student-mental-health-university-help.html', source: 'Save the Student' },
+    { title: 'How to Look After Your Mental Health at University', url: 'https://www.topuniversities.com/student-info/health-and-support/how-look-after-your-mental-health-university', source: 'Top Universities' },
+  ],
 };
 
 const northAfricaResources = {
-    organizations: [
-      { title: 'Embrace', description: 'A leading mental health organization in Lebanon, running a national emotional support and suicide prevention helpline.', url: '#' },
-      { title: 'Association Hadaf', description: 'A Moroccan association working to support individuals with mental health challenges and their families.', url: '#' },
-      { title: 'Association Tunisienne pour la Promotion de la Santé Mentale', description: 'A Tunisian association for the promotion of mental health awareness and services.', url: '#' },
-    ],
-     articles: [
-      { title: 'Breaking the Stigma: Mental Health in the Arab World', url: '#', source: 'Local News Outlet' },
-      { title: 'Navigating University Life in Morocco', url: '#', source: 'Student Guide' },
-    ],
+  organizations: [
+    { title: 'Embrace', description: 'A leading mental health organization in Lebanon, running a national emotional support and suicide prevention helpline.', url: 'https://embracelebanon.org/' },
+    { title: 'Nafsiyat', description: 'An intercultural therapy centre accessible to diverse communities, including those from North Africa.', url: 'https://www.nafsiyat.org.uk/' },
+    { title: 'Project Masam', description: 'An initiative providing mental health support to communities affected by conflict in the MENA region.', url: 'https://www.projectmasam.com/' },
+  ],
+   articles: [
+    { title: 'Breaking the Stigma: Mental Health in the Arab World', url: 'https://www.nature.com/articles/d41586-022-01584-z', source: 'Nature' },
+    { title: 'Navigating University Life in a New Country', url: 'https://www.internationalstudents.org/study-abroad-guide/first-year/', source: 'internationalstudents.org' },
+  ],
 };
 
 export default function ResourcesPage() {

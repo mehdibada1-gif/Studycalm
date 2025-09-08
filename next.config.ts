@@ -28,6 +28,12 @@ const nextConfig: NextConfig = {
         hostname: 'dare4.masterpeace.org',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ytimg.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

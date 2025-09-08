@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -57,11 +56,16 @@ export default function StudyPlanPage() {
     startTransition(async () => {
       setError(null);
       setStudyPlan(null);
-      const result = await generateStudyPlan(values);
-      if (result.studyPlan) {
-        setStudyPlan(result.studyPlan);
-      } else {
-        setError('Could not generate a study plan. Please try again.');
+      try {
+        const result = await generateStudyPlan(values);
+        if (result.studyPlan) {
+          setStudyPlan(result.studyPlan);
+        } else {
+          setError('Could not generate a study plan. Please try again.');
+        }
+      } catch (e) {
+        console.error(e);
+        setError('An unexpected error occurred. Please try again later.');
       }
     });
   }
