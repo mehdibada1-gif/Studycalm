@@ -11,7 +11,7 @@ const BREAK_TIME = 5 * 60;
 
 export default function PomodoroTimer() {
   const [mode, setMode] = useState<'study' | 'break'>('study');
-  const [timeLeft, setTimeLeft] = useState(STUDY_TIME);
+  const [timeLeft, setTimeLeft] = useState(0); // Initialize to 0 to prevent hydration mismatch
   const [isActive, setIsActive] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -27,7 +27,7 @@ export default function PomodoroTimer() {
       }, 1000);
     } else if (!isActive && intervalRef.current) {
       clearInterval(intervalRef.current);
-    } else if (timeLeft <= 0) {
+    } else if (timeLeft === 0 && isActive) {
         if (intervalRef.current) clearInterval(intervalRef.current);
         if (mode === 'study') {
             setMode('break');
@@ -42,9 +42,13 @@ export default function PomodoroTimer() {
         clearInterval(intervalRef.current);
       }
     };
-  }, [isActive, timeLeft]);
+  }, [isActive, timeLeft, mode]);
 
   const toggleTimer = () => {
+    // If the timer is at 0, reset it before starting
+    if (timeLeft === 0) {
+        setTimeLeft(mode === 'study' ? STUDY_TIME : BREAK_TIME);
+    }
     setIsActive(!isActive);
   };
 
@@ -91,4 +95,3 @@ export default function PomodoroTimer() {
     </div>
   );
 }
-
